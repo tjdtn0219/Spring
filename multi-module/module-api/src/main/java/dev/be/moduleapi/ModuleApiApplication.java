@@ -28,3 +28,5 @@ public class ModuleApiApplication {
     }
 
 }
+
+// java -jar -Dspring.profiles.active=local module-api-0.0.1-SNAPSHOT.jar
