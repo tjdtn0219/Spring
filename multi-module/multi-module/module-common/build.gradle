@@ -1,0 +1,48 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.3.1'
+    id 'io.spring.dependency-management' version '1.1.5'
+    id 'java-library'
+}
+
+group = 'dev.be'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    api 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'mysql:mysql-connector-java:8.0.30'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+tasks.bootJar { enabled = false }       //bootJar의 디폴트는 true -> 빌드 시, *.jar로 만드는 옵션
+                                        //module-common에서는 다른 모듈에서 참조하는 목적이기 때문에 jar파일 만들 필요 없음
+                                        //bootJar -> true하면, 메인 클래스 찾게 되는데, common 모듈에서는 메인클래스 이미 삭제해서, 오류남
+tasks.jar { enabled = true }            //디폴트 true, *-plain.jar 로 생성됨 (중간에 plain이 붙음)
+                                        //*-plain.jar는 실행되지 않는 jar임
+
+// ./gradlew clean :module-api:buildNeeded --stacktrace --info --refresh-dependencies -x test
